@@ -2,9 +2,17 @@ var socket = require( '../socket' );
 var Reflux = require( 'reflux' );
 
 var events = [
+    'loungeShowed',
+    'listShowed',
+    'gameShowed',
     'userAdded',
-    'host',
-    'cardAdded'
+    'thingAdded',
+    'thingRemoved',
+    'cardAdded',
+    'scoreAdded',
+    'readerOn',
+    'readerOff',
+    'socketId'
 ];
 
 var SocketActions = module.exports = Reflux.createActions( events.map( function( e ) { return e; } ) );

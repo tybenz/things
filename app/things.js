@@ -1,6 +1,8 @@
 module.exports = {
     random: function() {
-        return this.things[ Math.floor( Math.random() * this.things.length ) ];
+        var index = Math.floor( Math.random() * this.things.length );
+        var thing = this.things.splice( index, 1 );
+        return thing[ 0 ];
     },
 
     things: [

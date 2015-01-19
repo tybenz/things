@@ -28,6 +28,5 @@ exports.start = function() {
     Router.run( routes, Router.HistoryLocation, function ( Handler ) {
         React.render( <Handler />, document.getElementById( 'content' ) );
     });
-    console.log( 'READY' );
     socket.emit( 'appReady' );
 };

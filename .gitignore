@@ -9,3 +9,4 @@ tmp/*
 !tmp/images
 tmp/images/*
 !tmp/images/.gitkeep
+.DS_Store

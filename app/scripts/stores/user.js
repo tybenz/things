@@ -1,4 +1,5 @@
 var Reflux = require( 'reflux' );
+var _ = require( 'lodash' );
 var UserActions = require( '../actions/user' );
 var SocketActions = require( '../actions/socket' );
 var socket = require( '../socket' );
@@ -6,28 +7,38 @@ var socket = require( '../socket' );
 var userStore = module.exports = Reflux.createStore({
     listenables: [ UserActions, SocketActions ],
 
+    onSocketId: function( socketId ) {
+        socket.id = socketId;
+    },
+
+    onAddUser: function( dataUrl ) {
+        socket.emit( 'addUser', dataUrl );
+    },
+
     onUserAdded: function( user ) {
-        console.log( 'ADDED', user );
         this.users = this.users || [];
         this.updateUsers( this.users.concat( [ user ] ) );
     },
 
-    onSignedIn: function( dataUrl ) {
-        socket.emit( 'userAdded', dataUrl );
+    onAddScore: function( userId, score ) {
+        socket.emit( 'addScore', userId, score );
+    },
+
+    onScoreAdded: function( userId, score ) {
+        var user = this.users.reduce( function( memo, u ) {
+            if ( memo ) {
+                return memo;
+            } else if ( u.id == userId ) {
+                return u;
+            }
+        }, undefined );
+        user.score += score;
+        this.updateUsers( _.extend( [], this.users ) );
     },
 
     updateUsers: function( users ) {
         this.users = users;
         this.trigger( users );
-    },
-
-    isHost: function() {
-        this.users = this.users || [];
-
-        var host = this.users.reduce( function( memo, user ) {
-            return user.host ? user : memo;
-        });
-        return host && host.id == 1;//socket.io.engine.id;
     },
 
     getDefaultData: function() {
