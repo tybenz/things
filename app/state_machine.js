@@ -137,6 +137,7 @@ module.exports = function( server ) {
         },
 
         addScore: function( userId, score ) {
+            console.log( 'ADD SCORE 4' );
             var user = users.reduce( function( memo, u, i ) {
                 if ( memo ) {
                     return memo;
@@ -146,6 +147,7 @@ module.exports = function( server ) {
             }, undefined );
 
             user.score += score;
+            console.log( 'Addscore',user );
             io.emit( 'scoreAdded', userId, score );
         },
 
@@ -190,6 +192,7 @@ module.exports = function( server ) {
                 },
 
                 addScore: function( userId, score ) {
+                    console.log( 'ADD SCORE 3' );
                     this.addScore( userId, score );
                 }
             },
@@ -220,6 +223,7 @@ module.exports = function( server ) {
                 },
 
                 addScore: function( userId, score ) {
+                    console.log( 'ADD SCORE 2' );
                     this.addScore( userId, score );
                 }
             }
@@ -244,6 +248,7 @@ module.exports = function( server ) {
         });
 
         socket.on( 'addScore', function( userId, score ) {
+            console.log( 'ADD SCORE 1' );
             fsm.handle( 'addScore', userId, score );
         });
 

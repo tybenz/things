@@ -21,6 +21,7 @@ var userStore = module.exports = Reflux.createStore({
     },
 
     onAddScore: function( userId, score ) {
+        console.log( 'ADD SCORE CLIENT' );
         socket.emit( 'addScore', userId, score );
     },
 

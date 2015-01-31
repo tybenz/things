@@ -7,7 +7,7 @@ var Score = module.exports = React.createClass({
         };
 
         return (
-            <div className="score" data-id={this.props.userId}>
+            <div onClick={this.props.onClick ? this.props.onClick : function(){}} className="score" data-id={this.props.userId}>
                 <div className="score-avatar" style={style}>
                 </div>
                 <div className="score-digits">{this.props.score || 0}</div>

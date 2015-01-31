@@ -32,7 +32,9 @@ var Game = module.exports = React.createClass({
     },
 
     scoreUser: function( evt ) {
+        console.log( 'SCORE USER!' );
         evt.preventDefault();
+        evt.stopPropagation();
 
         var score = 1;
         var lastCard = this.lastCard();
@@ -47,6 +49,10 @@ var Game = module.exports = React.createClass({
     },
 
     closeOverlay: function( evt ) {
+        if ( evt ) {
+            evt.preventDefault();
+        }
+        console.log( 'CLOSE OVERLAY' );
         if ( evt.currentTarget.className == 'overlay' || evt.currentTarget.className == 'close-button' ) {
             if ( this.state.scoring ) {
                 this.setState( { scoring: undefined } );
@@ -71,9 +77,7 @@ var Game = module.exports = React.createClass({
                     <div className="popup">
                         <button onClick={view.closeOverlay} className="close-button"></button>
                         <p className="prompt">Who gets the point?</p>
-                        <div className="avatar-grid">
-                            {scores}
-                        </div>
+                        <div className="avatar-grid">{scores}</div>
                     </div>
                 </div>
             );
