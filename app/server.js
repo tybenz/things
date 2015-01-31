@@ -17,7 +17,7 @@ app.get( '/*', function( req, res, next ) {
     res.sendFile( __dirname + '/index.html' );
 });
 
-var server = app.listen( 8000, function() {
+var server = app.listen( process.env.PORT || 8000, function() {
     console.log( 'Listening on *:8000' );
 });
 
