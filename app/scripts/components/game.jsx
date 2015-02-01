@@ -27,8 +27,10 @@ var Game = module.exports = React.createClass({
 
     scoring: function( evt ) {
         evt.preventDefault();
-        var value = evt.currentTarget.dataset.value;
-        this.setState( { scoring: value } );
+        if ( evt.currentTarget.dataset.disabled == 'false' ) {
+            var value = evt.currentTarget.dataset.value;
+            this.setState( { scoring: value } );
+        }
     },
 
     scoreUser: function( evt ) {
@@ -66,7 +68,7 @@ var Game = module.exports = React.createClass({
         var scores;
         var view = this;
 
-        if ( this.state.scoring ) {
+        if ( this.state.scoring && this.props.reader ) {
             scores = this.props.users.map( function( user ) {
                 return (
                     <Score onClick={view.scoreUser} userId={user.id} src={user.avatar} score={user.score} />
@@ -103,9 +105,15 @@ var Game = module.exports = React.createClass({
             var showScoreClass = 'show-score';
         }
 
-        var things = this.lastCard().things.map( function( thing, i ) {
-            return <li className="thing" onClick={view.scoring} data-value={thing.text}>{thing.text}</li>
-        });
+        if ( this.props.reader ) {
+            var things = this.lastCard().things.map( function( thing, i ) {
+                return <li className="thing" data-disabled={thing.userId == socket.id ? 'true' : 'false'} onClick={view.scoring} data-value={thing.text}>{thing.text}</li>
+            });
+        } else {
+            var things = this.lastCard().things.map( function( thing, i ) {
+                return <li className="thing" data-value={thing.text}>{thing.text}</li>
+            });
+        }
 
         return (
             <div className={showScoreClass}>
