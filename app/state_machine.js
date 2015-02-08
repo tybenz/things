@@ -139,7 +139,11 @@ module.exports = {
                     io.emit( 'thingRemoved', card, thing );
 
                     if ( editCard.things.length < 3 ) {
-                        fsm.handle( 'addCard' );
+                        fsm.transition( 'summary' );
+                        setTimeout( function() {
+                            fsm.handle( 'addCard' );
+                        }, 6000 );
+                        // fsm.handle( 'addCard' );
                     }
                 },
 
@@ -204,6 +208,36 @@ module.exports = {
                     game: {
                         _onEnter: function() {
                             io.emit( 'gameShowed' );
+                        },
+
+                        addConnection: function( socket ) {
+                            this.addConnection( socket );
+                        },
+
+                        addUser: function( image, socket ) {
+                            this.addUser( image, socket );
+                        },
+
+                        addCard: function() {
+                            this.addCard();
+                        },
+
+                        addThing: function( card, thing, socket ) {
+                            this.addThing( card, thing, socket );
+                        },
+
+                        removeThing: function( card, thing ) {
+                            this.removeThing( card, thing );
+                        },
+
+                        addScore: function( userId, score ) {
+                            this.addScore( userId, score );
+                        }
+                    },
+
+                    summary: {
+                        _onEnter: function() {
+                            io.emit( 'summaryShowed' );
                         },
 
                         addConnection: function( socket ) {

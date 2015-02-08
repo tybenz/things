@@ -3,6 +3,7 @@ var Reflux = require( 'reflux' );
 var Lounge = require( './lounge' );
 var List = require( './list' );
 var Game = require( './game' );
+var Summary = require( './summary' );
 var userStore = require( '../stores/user' );
 var cardStore = require( '../stores/card' );
 var readerStore = require( '../stores/reader' );
@@ -52,6 +53,8 @@ var App = module.exports = React.createClass({
             return <List users={this.state.users} cards={this.state.cards} reader={this.state.reader} />
         } else if ( this.state.page == 'game' ) {
             return <Game users={this.state.users} cards={this.state.cards} reader={this.state.reader} />
+        } else if ( this.state.page == 'summary' ) {
+            return <Summary users={this.state.users} cards={this.state.cards} reader={this.state.reader} />
         } else {
             return <div>404</div>
         }

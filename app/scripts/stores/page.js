@@ -16,6 +16,10 @@ var pageStore = module.exports = Reflux.createStore({
         this.update( 'game' );
     },
 
+    onSummaryShowed: function() {
+        this.update( 'summary' );
+    },
+
     update: function( val ) {
         this.page = val;
         this.trigger( val );

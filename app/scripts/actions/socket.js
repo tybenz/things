@@ -4,6 +4,7 @@ var Reflux = require( 'reflux' );
 var events = [
     'loungeShowed',
     'listShowed',
+    'summaryShowed',
     'gameShowed',
     'userAdded',
     'thingAdded',
