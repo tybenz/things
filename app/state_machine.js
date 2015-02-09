@@ -39,34 +39,28 @@ module.exports = {
                     socket.emit( 'loungeShowed' );
                 },
 
-                addUser: function( image, socket ) {
-                    var regex = /^data:.+\/(.+);base64,(.*)$/;
-
-                    var matches = image.match( regex );
-                    var ext = matches[ 1 ];
-                    var data = matches[ 2 ];
-                    var buffer = new Buffer( data, 'base64' );
-                    var newPath = path.join( __dirname, '..', 'tmp', 'images', socket.id + '.' + ext );
-                    fs.writeFile( newPath, buffer, function( err ) {
-                        if ( err ) {
-                            console.error( err );
-                            return;
+                addUser: function( image, socketId ) {
+                    var socket = connections.reduce( function( memo, client ) {
+                        if ( memo ) {
+                            return memo;
+                        } else if ( client.id == socketId ) {
+                            return client;
                         }
+                    }, undefined );
 
-                        var user = {
-                            score: 0,
-                            id: socket.id,
-                            avatar: '/images/' + socket.id + '.' + ext
-                        };
+                    var user = {
+                        score: 0,
+                        id: socketId,
+                        avatar: '/images/' + path.basename( image )
+                    };
 
-                        if ( users.length == 0 ) {
-                            reader = socket;
-                            socket.emit( 'readerOn' );
-                        }
+                    if ( users.length == 0 ) {
+                        reader = socket;
+                        socket.emit( 'readerOn' );
+                    }
 
-                        users.push( user );
-                        io.emit( 'userAdded', user );
-                    });
+                    users.push( user );
+                    io.emit( 'userAdded', user );
                 },
 
                 addCard: function() {
@@ -314,5 +308,9 @@ module.exports = {
         reader = undefined;
         // io = require( 'socket.io' )( expressServer );
         fsm = newFsm();
+    },
+
+    handle: function() {
+        fsm.handle.apply( fsm, arguments );
     }
 };

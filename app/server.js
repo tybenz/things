@@ -2,6 +2,7 @@ var express = require( 'express' );
 var logger = require( 'morgan' );
 var path = require( 'path' );
 var browserify = require( 'browserify-middleware' );
+var multer = require( 'multer' );
 var app = express();
 var stateMachine = require( './state_machine' );
 
@@ -13,6 +14,7 @@ browserify.settings({
 app.use( '/scripts', browserify( path.join( __dirname, 'scripts' ) ) );
 app.use( '/images', express.static( __dirname + '/../tmp/images' ) );
 app.use( '/', express.static( __dirname ) );
+app.use( multer( { dest: __dirname + '/../tmp/images' } ) );
 
 app.get( '/restart', function( req, res, next ) {
     stateMachine.restart();
@@ -21,6 +23,13 @@ app.get( '/restart', function( req, res, next ) {
 
 app.get( '/*', function( req, res, next ) {
     res.sendFile( __dirname + '/index.html' );
+});
+
+app.post( '/user_image', function( req, res, next ) {
+    console.log( req.query );
+    console.log( req.files[ 'files[]' ].path, req.query.socketId );
+    stateMachine.handle( 'addUser', req.files[ 'files[]' ].path, req.query.socketId );
+    res.status( 200 ).end();
 });
 
 var server = app.listen( process.env.PORT || 8000, function() {

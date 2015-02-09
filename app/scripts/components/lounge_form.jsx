@@ -1,20 +1,37 @@
+var $ = require( 'jquery' );
+var fileupload = require( 'blueimp-file-upload' );
 var React = require( 'react' );
 var UserActions = require( '../actions/user' );
+var socket = require( '../socket' );
 
 var LoungForm = module.exports = React.createClass({
+    componentDidMount: function() {
+        setTimeout( function() {
+            console.log( socket.id );
+            $( '#avatar-select-file' ).fileupload({
+                url: '/user_image?socketId=' + socket.id,
+                multipart: true,
+                dataType: 'json',
+                done: function( evt, data ) {
+                    console.log( evt, data );
+                }
+            });
+        }, 3000 );
+    },
+
     photoSelected: function( evt ) {
-        var file = evt.currentTarget.files[ 0 ];
+        // var file = evt.currentTarget.files[ 0 ];
 
-        var reader = new FileReader();
-        var self = this;
+        // var reader = new FileReader();
+        // var self = this;
 
-        reader.onloadend = function() {
-            UserActions.addUser( reader.result );
-        };
+        // reader.onloadend = function() {
+        //     UserActions.addUser( reader.result );
+        // };
 
-        if ( file ) {
-            reader.readAsDataURL( file );
-        }
+        // if ( file ) {
+        //     reader.readAsDataURL( file );
+        // }
     },
 
     render: function() {
