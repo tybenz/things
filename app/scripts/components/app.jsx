@@ -11,6 +11,8 @@ var pageStore = require( '../stores/page' );
 var SocketActions = require( '../actions/socket' );
 var UserActions = require( '../actions/user' );
 var socket = require( '../socket' );
+var injectTapEventPlugin = require( 'react-tap-event-plugin' );
+injectTapEventPlugin();
 
 var ListForm = require( './list_form' );
 var ListWaiting = require( './list_waiting' );

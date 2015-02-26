@@ -11,7 +11,7 @@ browserify.settings({
     extensions: [ '.jsx' ],
     transform: ['reactify']
 });
-app.use( '/scripts', browserify( path.join( __dirname, 'scripts' ) ) );
+// app.use( '/scripts', browserify( path.join( __dirname, 'scripts' ) ) );
 app.use( '/images', express.static( __dirname + '/../tmp/images' ) );
 app.use( '/', express.static( __dirname ) );
 app.use( multer( { dest: __dirname + '/../tmp/images' } ) );

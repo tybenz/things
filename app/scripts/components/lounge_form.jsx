@@ -3,6 +3,7 @@ var fileupload = require( 'blueimp-file-upload' );
 var React = require( 'react' );
 var UserActions = require( '../actions/user' );
 var socket = require( '../socket' );
+var toBlob = require( 'canvas-to-blob' );
 
 var LoungForm = module.exports = React.createClass({
     componentDidMount: function() {
@@ -20,18 +21,30 @@ var LoungForm = module.exports = React.createClass({
     },
 
     photoSelected: function( evt ) {
-        // var file = evt.currentTarget.files[ 0 ];
+        var file = evt.currentTarget.files[ 0 ];
 
-        // var reader = new FileReader();
-        // var self = this;
+        var uploadImage = function( blob ) {
+            $( '#avatar-select-file' ).fileupload( 'add', { files: [ blob ] } );
+        };
 
-        // reader.onloadend = function() {
-        //     UserActions.addUser( reader.result );
-        // };
+        loadImage.parseMetaData( file, function( data ) {
+            var options = {
+                contain: 300,
+                canvas: true
+            };
 
-        // if ( file ) {
-        //     reader.readAsDataURL( file );
-        // }
+            if ( data.exif ) {
+                options.orientation = data.exif.get( 'Orientation' );
+            }
+
+            loadImage(
+                file,
+                function( canvas ) {
+                    uploadImage( toBlob( canvas.toDataURL( 'image/png' ) ) );
+                },
+                options
+            );
+        });
     },
 
     render: function() {
@@ -43,7 +56,8 @@ var LoungForm = module.exports = React.createClass({
                         <div className="avatar-select-head"></div>
                         <div className="avatar-select-body"></div>
                         <p className="avatar-select-description">Tap to take a photo</p>
-                        <input id="avatar-select-file" type="file" onChange={this.photoSelected} />
+                        <input type="file" onChange={this.photoSelected} />
+                        <input id="avatar-select-file" type="file" style={{display: 'none'}} />
                     </div>
                 </div>
             </div>
