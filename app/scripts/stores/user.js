@@ -20,6 +20,17 @@ var userStore = module.exports = Reflux.createStore({
         this.updateUsers( this.users.concat( [ user ] ) );
     },
 
+    onUserRemoved: function( socketId ) {
+        for ( var i = this.users.length - 1; i >= 0; i-- ) {
+            var user = this.users[ i ];
+            if ( user.id == socketId ) {
+                this.users.splice( i, 1 );
+            }
+        }
+
+        this.updateUsers( _.extend( [], this.users ) );
+    },
+
     onAddScore: function( userId, score ) {
         console.log( 'ADD SCORE CLIENT' );
         socket.emit( 'addScore', userId, score );

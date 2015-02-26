@@ -39,6 +39,41 @@ module.exports = {
                     socket.emit( 'loungeShowed' );
                 },
 
+                removeConnection: function( socketId ) {
+                    var index = connections.reduce( function( memo, client, i ) {
+                        if ( memo ) {
+                            return memo;
+                        } else if ( client.id == socketId ) {
+                            return i;
+                        }
+                    }, undefined );
+                    connections.splice( index, 1 );
+
+                    index = users.reduce( function( memo, client, i ) {
+                        if ( memo ) {
+                            return memo;
+                        } else if ( client.id == socketId ) {
+                            return i;
+                        }
+                    }, undefined );
+                    users.splice( index, 1 );
+
+                    console.log( 'CARDS', cards );
+                    for ( var i = cards.length - 1; i >= 0; i-- ) {
+                        var card = cards[ i ];
+                        console.log( 'CARD', card );
+                        for ( var j = card.things.length - 1; j >= 0; j-- ) {
+                            var thing = card.things[ j ];
+                            if ( thing.userId == socketId ) {
+                                card.things.splice( j, 1 );
+                                io.emit( 'thingRemoved', card, thing );
+                            }
+                        }
+                    }
+
+                    io.emit( 'userRemoved', socketId );
+                },
+
                 addUser: function( image, socketId ) {
                     var socket = connections.reduce( function( memo, client ) {
                         if ( memo ) {
@@ -164,6 +199,10 @@ module.exports = {
                             this.addConnection( socket );
                         },
 
+                        removeConnection: function( socket ) {
+                            this.removeConnection( socket );
+                        },
+
                         addUser: function( image, socket ) {
                             this.addUser( image, socket );
                         }
@@ -176,6 +215,10 @@ module.exports = {
 
                         addConnection: function( socket ) {
                             this.addConnection( socket );
+                        },
+
+                        removeConnection: function( socket ) {
+                            this.removeConnection( socket );
                         },
 
                         addUser: function( image, socket ) {
@@ -208,6 +251,10 @@ module.exports = {
                             this.addConnection( socket );
                         },
 
+                        removeConnection: function( socket ) {
+                            this.removeConnection( socket );
+                        },
+
                         addUser: function( image, socket ) {
                             this.addUser( image, socket );
                         },
@@ -238,6 +285,10 @@ module.exports = {
                             this.addConnection( socket );
                         },
 
+                        removeConnection: function( socket ) {
+                            this.removeConnection( socket );
+                        },
+
                         addUser: function( image, socket ) {
                             this.addUser( image, socket );
                         },
@@ -265,10 +316,16 @@ module.exports = {
         fsm = newFsm();
 
         io.on( 'connection', function( socket ) {
-            console.log( 'NEW CONNECTION' );
+            var socketId = socket.id;
+            console.log( 'NEW CONNECTION', socket.id );
             socket.emit( 'socketId', socket.id );
 
             fsm.handle( 'addConnection', socket );
+
+            socket.on( 'disconnect', function() {
+                console.log( 'DISCONNECT', socketId );
+                fsm.handle( 'removeConnection', socketId );
+            });
 
             socket.on( 'startRound', function() {
                 fsm.transition( 'game' );
