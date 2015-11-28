@@ -7,6 +7,7 @@ var events = [
     'summaryShowed',
     'gameShowed',
     'userAdded',
+    'removedUserAdded',
     'userRemoved',
     'thingAdded',
     'thingRemoved',

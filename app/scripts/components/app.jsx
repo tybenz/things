@@ -29,7 +29,10 @@ var App = module.exports = React.createClass({
 
     getInitialState: function() {
         return {
-            users: [],
+            users: {
+                active: [],
+                removed: []
+            },
             cards: [],
             page: 'lounge',
             reader: false
@@ -39,8 +42,8 @@ var App = module.exports = React.createClass({
     render: function() {
         var signedIn = false;
         var users = this.state.users;
-        if ( users.length ) {
-            signedIn = users.reduce( function( memo, user ) {
+        if ( users.active && users.active.length ) {
+            signedIn = users.active.reduce( function( memo, user ) {
                 if ( memo ) {
                     return memo;
                 } else if ( user.id == socket.id ) {
@@ -50,13 +53,13 @@ var App = module.exports = React.createClass({
         }
 
         if ( this.state.page == 'lounge' ) {
-            return <Lounge users={this.state.users} cards={this.state.cards} signedIn={signedIn} reader={this.state.reader}/>
+            return <Lounge users={this.state.users.active} removedUsers={this.state.users.removed} cards={this.state.cards} signedIn={signedIn} reader={this.state.reader}/>
         } else if ( this.state.page == 'list' ) {
-            return <List users={this.state.users} cards={this.state.cards} reader={this.state.reader} />
+            return <List users={this.state.users.active} cards={this.state.cards} reader={this.state.reader} />
         } else if ( this.state.page == 'game' ) {
-            return <Game users={this.state.users} cards={this.state.cards} reader={this.state.reader} />
+            return <Game users={this.state.users.active} cards={this.state.cards} reader={this.state.reader} />
         } else if ( this.state.page == 'summary' ) {
-            return <Summary users={this.state.users} cards={this.state.cards} reader={this.state.reader} />
+            return <Summary users={this.state.users.active} cards={this.state.cards} reader={this.state.reader} />
         } else {
             return <div>404</div>
         }

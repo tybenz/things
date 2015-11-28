@@ -47,10 +47,32 @@ var LoungForm = module.exports = React.createClass({
         });
     },
 
+    reentryClicked: function( evt ) {
+        // tell server i am back
+        // server will update all clients of my id
+        UserActions.reenter( evt.currentTarget.dataset.avatar );
+    },
+
     render: function() {
+        var removed = this.props.removedUsers;
+        if ( removed && removed.length ) {
+            var avatars = removed.map( function( user ) {
+                var style = { backgroundImage: 'url(' + user.avatar + ')' };
+                return <div className="avatar" style={style} onClick={this.reentryClicked} data-avatar={this.avatar}></div>
+            });
+
+            var reentry = (
+                <div class="avatar-grid">
+                    <p>Did you get disconnected? Pick the one that looks like you to jump back in! Or, if you are new, take a new picture</p>
+                    {avatars}
+                </div>
+            );
+        }
+
         return (
             <div>
-                <h1 className="center">The Game of Things</h1>
+                <h1 className="center">Welcome</h1>
+                {reentry}
                 <div className="avatar-select-wrapper">
                     <div className="avatar-select">
                         <div className="avatar-select-head"></div>

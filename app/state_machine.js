@@ -9,6 +9,7 @@ var io;
 var expressServer;
 var connections = [];
 var users = [];
+var removedUsers = [];
 var cards = [];
 var reader;
 var isReader = function( socket ) {
@@ -24,11 +25,38 @@ module.exports = {
             return new machina.Fsm({
                 initialState: 'lounge',
 
+                reenterUser: function( data ) {
+                    var id = data.id;
+                    var avatarPath = data.avatar;
+                    var reenteringUser;
+                    var index = removedUsers.reduce( function( memo, user, i ) {
+                        if ( user.avatar == avatarPath ) {
+                            reenteringUser = user;
+                            memo = i;
+                        }
+
+                        return memo;
+                    }, undefined);
+
+                    if ( user && index ) {
+                        removedUser.splice( index, 1 );
+                        users.push( user );
+                        // update all clients with id
+                        console.log( 'USER REENTERED' );
+                        io.emit( 'userReentered', user, id );
+                        user.id = id;
+                    }
+                },
+
                 addConnection: function( socket ) {
                     connections.push( socket );
 
                     users.forEach( function( user ) {
                         socket.emit( 'userAdded', user );
+                    });
+
+                    removedUsers.forEach( function( user ) {
+                        socket.emit( 'removedUserAdded', user );
                     });
 
                     var lastCard = cards[ cards.length - 1 ];
@@ -56,7 +84,11 @@ module.exports = {
                             return i;
                         }
                     }, undefined );
-                    users.splice( index, 1 );
+                    // remove the user and add it to the removed list
+                    if ( index ) {
+                        var user = users.splice( index, 1 )[ 0 ];
+                        removedUsers.push( user );
+                    }
 
                     console.log( 'CARDS', cards );
                     for ( var i = cards.length - 1; i >= 0; i-- ) {
@@ -71,7 +103,7 @@ module.exports = {
                         }
                     }
 
-                    io.emit( 'userRemoved', socketId );
+                    io.emit( 'userRemoved', user );
                 },
 
                 addUser: function( image, socketId ) {

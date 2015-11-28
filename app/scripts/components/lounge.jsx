@@ -8,7 +8,7 @@ var Lounge = React.createClass({
         if ( this.props.signedIn ) {
             return <LoungeList users={this.props.users} reader={this.props.reader}/>;
         } else {
-            return <LoungeForm />;
+            return <LoungeForm removedUsers={this.props.removedUsers}/>;
         }
     }
 });

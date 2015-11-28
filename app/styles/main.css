@@ -6,7 +6,7 @@ body {
     margin: 0;
     padding: 1.5em 1em 1em;
     background: #D8E5DB;
-    font-family: share-regular, sans-serif;
+    font-family: open-sans-condensed, sans-serif;
     color: #333;
     max-width: 400px;
     margin-left: auto;
@@ -14,8 +14,9 @@ body {
 }
 
 h1, h2, h3, h4, h5 {
-    margin: 0.4em0;
-    font-family: share-regular, sans-serif;
+    margin: 0.4em 0;
+    font-weight: 600;
+    font-family: kreon, sans-serif;
 }
 
 h1 {
@@ -103,7 +104,7 @@ h4 {
 }
 
 .avatar-select-description {
-    font-family: share-regular, sans-serif;
+    font-family: open-sans-condensed, sans-serif;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -191,7 +192,7 @@ h4 {
 }
 
 .thing-form textarea {
-    font-family: share-regular, sans-serif;
+    font-family: open-sans-condensed, sans-serif;
     font-size: 1em;
     font-weight bold;
     background: white;

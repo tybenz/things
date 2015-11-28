@@ -15,12 +15,25 @@ var userStore = module.exports = Reflux.createStore({
         socket.emit( 'addUser', dataUrl );
     },
 
+    onReender: function( avatar ) {
+        socket.emit( 'reenter', {
+            id: socket.id,
+            avatar: avatar
+        });
+    },
+
     onUserAdded: function( user ) {
         this.users = this.users || [];
         this.updateUsers( this.users.concat( [ user ] ) );
     },
 
+    onRemovedUserAdded: function( user ) {
+        this.removedUsers = this.removedUsers || [];
+        this.updateUsers( undefined, this.removedUsers.concat( [ user ] ) );
+    },
+
     onUserRemoved: function( socketId ) {
+        this.users = this.users || [];
         for ( var i = this.users.length - 1; i >= 0; i-- ) {
             var user = this.users[ i ];
             if ( user.id == socketId ) {
@@ -48,9 +61,10 @@ var userStore = module.exports = Reflux.createStore({
         this.updateUsers( _.extend( [], this.users ) );
     },
 
-    updateUsers: function( users ) {
-        this.users = users;
-        this.trigger( users );
+    updateUsers: function( users, removedUsers ) {
+        this.users = users || this.users;
+        this.removedUsers = removedUsers || this.removedUsers;
+        this.trigger( { active: users, removed: removedUsers } );
     },
 
     getDefaultData: function() {
